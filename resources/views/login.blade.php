@@ -15,7 +15,6 @@
               <p>Login Page</p>
           </div>
           <div class="card-body">
-           {{-- @include('components._flash') --}}
            @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -26,7 +25,7 @@
             </div>
             @endif
             @if(session()->has('error_message'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible" role="alert">
                 <strong>Error:</strong> {{ session('error_message') }}
                 <button type="button" class="close btn btn-danger" data-bs-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -65,9 +64,5 @@
       </div>
   </div>  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-  {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> --}}
-  {{-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script> --}}
-
   </body>
 </html>

@@ -41,8 +41,15 @@ class AuthController extends Controller
                     'last_online' =>Carbon::now()
                 ]);
                 return redirect()->intended('/dashboard');
+            }else {
+                return redirect()->back()->with('error_message', 'Invalid email or password!');
             }
-            return redirect()->back()->with('error_message', 'Invalid email or password!');
+            // return redirect()->back()->with('sweet_alert', [
+            //     'icon'=>'error',
+            //     'title'=>'Error',
+            //     'text'=>'Invalid email or password!'
+            // ]);
+
         } catch (Exception $e) {
             return redirect()->back()->with('sweet_alert',[
                 'icon' => 'error',
