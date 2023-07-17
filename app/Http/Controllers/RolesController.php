@@ -3,24 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DataTables;
-use App\Models\User;
+use App\Models\Role;
 use DB;
+use DataTables;
 
-class UsersController extends Controller
+
+class RolesController extends Controller
 {
     public function index()
     {
-        $data['users'] = User::all(); 
-        return view('users.index')->with($data);
+        return view('roles.index');
     }
 
     public function dashboard(Request $request)
     {
         if ($request->ajax()) {
-            $data = DB::table('users')
+            $data = DB::table('roles')
                     ->orderBy('created_at', 'DESC');
-            // dd($data);
 
             return DataTables::of($data)
             ->editColumn('action', function($row) {
@@ -39,6 +38,20 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        // try {
+            $role = $request->validate([
+                'name' => 'required|min:3',
+                'display_name' => 'required|min:3',
+                'description' => 'required'
+            ]);
+
+            $role = new Role($role);
+            $role->save();
+            return redirect()->back();
+
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        // }
     }
 }

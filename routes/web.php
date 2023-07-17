@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RolesController;
+
 
 
 
@@ -29,7 +31,20 @@ Route::get('/', [AuthController::class,'index'])->name('login');
 Route::post('/', [AuthController::class,'login']);
 Route::group(['middleware' => ['auth']], function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard.index');
+
+// User
     Route::get('/users/index', [UsersController::class, 'index']);
+    Route::get('/users/dashboard', [UsersController::class, 'dashboard']);
+    Route::post('/users/index', [UsersController::class, 'store']);
+
+// User END
+
+// Role 
+    Route::get('/roles/index', [RolesController::class, 'index']);
+    Route::get('/roles/dashboard', [RolesController::class, 'dashboard']);
+    Route::post('/roles/index', [RolesController::class, 'store']);
+
+// Role END
     Route::get('/signout', [AuthController::class,'signout']);
 
 

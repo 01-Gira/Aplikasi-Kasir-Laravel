@@ -63,7 +63,7 @@
             </ul>
           </li>
           <li class="nav-item 
-          {{  url('/users/index') == request()->url() || url('/products/index') == request()->url() || url('/transactions/index') == request()->url() ? 'menu-open' : ''}}">
+          {{  url('/users/index') == request()->url() || url('/products/index') == request()->url() || url('/transactions/index') == request()->url() || url('/roles/index') == request()->url() ? 'menu-open' : ''}}">
             <a href="#" class="nav-link {{ url('/users/index') == request()->url() || url('/products/index') == request()->url() || url('/transactions/index') == request()->url() ? 'active' : ''}}">
               <i class="fa-solid fa-box"></i>
               <p>
@@ -76,6 +76,12 @@
                 <a href="/users/index" class="nav-link {{ url('/users/index') == request()->url() ? 'active' : ''}}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Users</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/roles/index" class="nav-link {{ url('/roles/index') == request()->url() ? 'active' : ''}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Roles</p>
                 </a>
               </li>
               <li class="nav-item">
