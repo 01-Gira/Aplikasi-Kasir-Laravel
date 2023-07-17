@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\PermissionsController;
 
 
 
@@ -32,19 +33,26 @@ Route::post('/', [AuthController::class,'login']);
 Route::group(['middleware' => ['auth']], function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard.index');
 
-// User
-    Route::get('/users/index', [UsersController::class, 'index']);
-    Route::get('/users/dashboard', [UsersController::class, 'dashboard']);
-    Route::post('/users/index', [UsersController::class, 'store']);
+    Route::group(['middleware' => ['role:superadmin|admin']], function(){
+        // User
+        Route::get('/users/index', [UsersController::class, 'index']);
+        Route::get('/users/dashboard', [UsersController::class, 'dashboard']);
+        Route::post('/users/index', [UsersController::class, 'store']);
+        // User END
 
-// User END
+        // Role 
+        Route::get('/roles/index', [RolesController::class, 'index']);
+        Route::get('/roles/dashboard', [RolesController::class, 'dashboard']);
+        Route::post('/roles/index', [RolesController::class, 'store']);
+        // Role END
 
-// Role 
-    Route::get('/roles/index', [RolesController::class, 'index']);
-    Route::get('/roles/dashboard', [RolesController::class, 'dashboard']);
-    Route::post('/roles/index', [RolesController::class, 'store']);
+        // Permissions 
+        Route::get('/permissions/index', [PermissionsController::class, 'index']);
+        Route::get('/permissions/dashboard', [PermissionsController::class, 'dashboard']);
+        // Permission END
+    });
 
-// Role END
+
     Route::get('/signout', [AuthController::class,'signout']);
 
 
