@@ -3,22 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DataTables;
 use App\Models\User;
+use App\Models\Role;
+use Laratrust\LaratrustFacade as Laratrust;
+use DataTables;
 use DB;
 
 class UsersController extends Controller
 {
     public function index()
     {
-        $data['users'] = User::all(); 
+        $data['roles'] = Role::all(); 
         return view('users.index')->with($data);
     }
 
     public function dashboard(Request $request)
     {
         if ($request->ajax()) {
-            $data = DB::table('users')
+            $data = DB::table('users as a')
                     ->orderBy('created_at', 'DESC');
             // dd($data);
 
@@ -30,6 +32,10 @@ class UsersController extends Controller
                 $var .= '</center>'; 
                 return $var;
             })
+            ->editColumn('role', function($row) {
+                $roleName = User::find($row->id)->roles->pluck('name')->first();
+                return $roleName;
+            })
             ->rawColumns(['action'])
             ->make(true);
         }else {
@@ -39,29 +45,33 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $user = $request->validate([
-            'name' => 'required|min:3',
+            'name' => 'required|min:5',
             'email' => 'required|email',
-            'phoneNo' => 'required|numeric|min:12',
+            'phoneNo' => 'required|numeric',
             'address' => 'required|min:10',
+            'role' => 'required',
+            'permission' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        // dd($request->role);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phoneNo = $request->phoneNo;
+        $user->address = $request->address;
+        $user->password = bcrypt('123456');
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            // dd($image);
-            $imageName = time() . '_' . $request->name . '.'.$image->getClientOriginalExtension();
+            $imageName = time() . '-' . $request->name . '.'.$image->getClientOriginalExtension();
             // dd($imageName);
             $image->storeAs('public/users', $imageName);
-            $user['image'] = 'users/' . $imageName;
+            $user->image = 'users/' . $imageName;
         }
 
-        $user['password'] = bcrypt('12345678');
-
-        $user = new User($user);
         $user->save();
-
-        $user->addRole($request->role); // Menggunakan attachRole() untuk menambahkan role
+        $user->addRole($request->role);
 
         return redirect()->back();
     }

@@ -61,6 +61,7 @@
                         <td class="text-center">No</td>
                         <td class="text-center">Name</td>
                         <td class="text-center">Email</td>
+                        <td class="text-center">Role</td>
                         <td class="text-center">Action</td>
                       </tr>
                     </thead>
@@ -153,7 +154,7 @@
                   </div>
                   <div class="col-md-6">
                       <label for="imagePreview">Image Preview</label>
-                      <img id="imagePreview" src="#" alt="Img Preview">
+                      <img id="imagePreview" src="#" alt="Img Preview" class="img-thumbnail">
                   </div>
                   <div class="col-md-6">
                       <label for="address">Address</label>
@@ -169,8 +170,9 @@
                   <div class="col-md-12">
                     <label for="role">Assign Role</label>
                     <select name="role" class="form-control select2"data-placeholder="Select a Role">
-                      <option value="admin">Admin</option>
-                      <option value="cashier">Cashier</option>
+                      @foreach ($roles as $role)
+                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                      @endforeach
                     </select>
                   </div>
                   <div class="col-md-12">
@@ -219,6 +221,7 @@
         { data: null, name: null, className: 'text-center'},
         { data: 'name', name: 'name', className: 'text-center'},
         { data: 'email', name: 'email', className: 'text-center'},
+        { data: 'role', name: 'role', className: 'text-center'},
         { data: 'action' , namae: 'action', className: 'text-center', searchable: false, orderable: false}
       ]
     });
