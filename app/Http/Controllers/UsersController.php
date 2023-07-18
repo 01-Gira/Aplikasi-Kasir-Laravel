@@ -39,6 +39,30 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        $user = $request->validate([
+            'name' => 'required|min:3',
+            'email' => 'required|email',
+            'phoneNo' => 'required|numeric|min:12',
+            'address' => 'required|min:10',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            // dd($image);
+            $imageName = time() . '_' . $request->name . '.'.$image->getClientOriginalExtension();
+            // dd($imageName);
+            $image->storeAs('public/users', $imageName);
+            $user['image'] = 'users/' . $imageName;
+        }
+
+        $user['password'] = bcrypt('12345678');
+
+        $user = new User($user);
+        $user->save();
+
+        $user->addRole($request->role); // Menggunakan attachRole() untuk menambahkan role
+
+        return redirect()->back();
     }
 }
