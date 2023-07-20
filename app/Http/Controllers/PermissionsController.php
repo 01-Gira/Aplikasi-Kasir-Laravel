@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use App\Models\Permission;
 use DB;
 use DataTables;
 
@@ -37,6 +38,18 @@ class PermissionsController extends Controller
 
     public function store(Request $request)
     {
+        $except_token = $request->except(['_token']);
+        // dd($except_token);
+        for ($i=0; $i < count($except_token['name']); $i++) { 
+            $store = [
+                'name' => $except_token['name'][$i],
+                'display_name' => $except_token['display_name'][$i],
+                'description' => $except_token['description'][$i]
+            ];
 
+            $permission = new Permission($store);
+            $permission->save();
+        }
+        return redirect()->back();
     }
 }

@@ -23,6 +23,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+        @include('components._flash')
         <div class="row">
           <div class="col-md-6">
             <div class="card">
@@ -55,7 +56,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table table-stripped" id="tblMaster">
+                  <table class="table table-stripped " id="tblMaster">
                     <thead>
                       <tr>
                         <td class="text-center">No</td>
@@ -66,22 +67,6 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <?php $no = 0; ?>
-                      {{-- 
-                      @foreach ($users as $user)
-                      <tr>
-                        <td class="text-center">{{ ++$no }}</td>
-                        <td class="text-center">{{ $user->name }}</td>
-                        <td class="text-center">{{ $user->email }}</td>
-                        <td class="text-center">{{ $user->role }}</td>
-                        <td class="text-center"></td>
-                        <td class="text-center">
-                          <button type="button" class="btn btn-sm btn-warning mr-2"><i class="fas fa-pencil"></i></button>
-                          <button type="button" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                        </td>
-                      </tr>
-                      @endforeach
-                     --}}
                     </tbody>
                   </table>
                 </div>
@@ -99,100 +84,200 @@
   <!-- /.content-wrapper -->
 
     {{-- Modal --}}
-    <div class="modal" id="createUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg"> 
-      <form action="/users/index" method="post" enctype="multipart/form-data">
-       @csrf
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="createUserModalLabel">Create User</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <div class="row">
-                  <div class="col-md-6">
-                      <label for="name">Name</label>
-                      <input type="text" class="form-control @error('name')
-                          is-invalid
-                      @enderror" placeholder="Name" name="name">
-                      @error('name')
-                          <div class="invalid-feedback">
-                              {{ $message }}
-                          </div>
-                      @enderror
-                  </div>
-                  <div class="col-md-6">
-                      <label for="email">Email</label>
-                      <input type="text" class="form-control @error('email')
-                          is-invalid
-                      @enderror" placeholder="Email" name="email">
-                      @error('email')
-                          <div class="invalid-feedback">
-                              {{ $message }}
-                          </div>
-                      @enderror
-                  </div>
-                  <div class="col-md-6">
-                    <label for="image">Image</label>
-                    <input type="file" name="image" class="form-control" id="image">
-                    @error('image')
+  <div class="modal fade" id="createUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> 
+    <form action="/users/index" method="post" enctype="multipart/form-data">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createUserModalLabel">Create User</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control @error('name')
+                        is-invalid
+                    @enderror" placeholder="Name" name="name">
+                    @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                     @enderror
-                  </div>
-                  <div class="col-md-6">
-                      <label for="phoneNo">Phone Number</label>
-                      <input type="text" class="form-control @error('phoneNo')
-                          is-invalid
-                      @enderror" placeholder="phoneNo" name="phoneNo">
-                      @error('phoneNo')
-                          <div class="invalid-feedback">
-                              {{ $message }}
-                          </div>
-                      @enderror
-                  </div>
-                  <div class="col-md-6">
-                      <label for="imagePreview">Image Preview</label>
-                      <img id="imagePreview" src="#" alt="Img Preview" class="img-thumbnail">
-                  </div>
-                  <div class="col-md-6">
-                      <label for="address">Address</label>
-                      <textarea name="address" class="form-control @error('address')
-                          is-invalid
-                      @enderror" cols="30" rows="10" placeholder="Address"></textarea>
-                      @error('address')
-                          <div class="invalid-feedback">
-                              {{ $message }}
-                          </div>
-                      @enderror
-                  </div>
-                  <div class="col-md-12">
-                    <label for="role">Assign Role</label>
-                    <select name="role" class="form-control select2"data-placeholder="Select a Role">
-                      @foreach ($roles as $role)
-                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <div class="col-md-12">
-                    <label for="permission">Assign Permission</label>
-                    <select name="permission[]" class="form-control select2" multiple="multiple" data-placeholder="Select a Permission">
-                      <option value="admin">Admin</option>
-                      <option value="cashier">Cashier</option>
-                    </select>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Save</button>
-          </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control @error('email')
+                        is-invalid
+                    @enderror" placeholder="Email" name="email">
+                    @error('email')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                  <label for="image">Image</label>
+                  <input type="file" name="image" class="form-control @error('image')
+                    is-invalid
+                  @enderror" id="image">
+                  @error('image')
+                      <div class="invalid-feedback">
+                          {{ $message }}
+                      </div>
+                  @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="phoneNo">Phone Number</label>
+                    <input type="text" class="form-control @error('phoneNo')
+                        is-invalid
+                    @enderror" placeholder="phoneNo" name="phoneNo">
+                    @error('phoneNo')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="imagePreview">Image Preview</label>
+                    <img id="imagePreview" src="#" alt="Img Preview" class="img-thumbnail">
+                </div>
+                <div class="col-md-6">
+                    <label for="address">Address</label>
+                    <textarea name="address" class="form-control @error('address')
+                        is-invalid
+                    @enderror" cols="30" rows="10" placeholder="Address"></textarea>
+                    @error('address')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-12">
+                  <label for="role">Assign Role</label>
+                  <select name="role" class="form-control select2"data-placeholder="Select a Role">
+                    @foreach ($roles as $role)
+                      <option value="{{ $role->id }}">{{ $role->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label for="permission">Assign Permission</label>
+                  <select name="permission[]" class="form-control select2" multiple="multiple" data-placeholder="Select a Permission">
+                    <option value="admin">Admin</option>
+                    <option value="cashier">Cashier</option>
+                  </select>
+                </div>
+            </div>
         </div>
-      </form>
-  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
       </div>
+    </form>
+
     </div>
+  </div>
+{{-- 
+
+  <div class="modal fade" id="editUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> 
+    <form action="/users/index/update" method="put" enctype="multipart/form-data">
+      @csrf
+      @method('PUT')
+      <input type="text" >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editUserModalLabel">Create User</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control @error('name')
+                        is-invalid
+                    @enderror" placeholder="Name" name="name" id="name">
+                    @error('name')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control @error('email')
+                        is-invalid
+                    @enderror" placeholder="Email" name="email" id="email">
+                    @error('email')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                  <label for="image">Image</label>
+                  <input type="file" name="image" class="form-control" id="imageEdit">
+                  @error('image')
+                      <div class="invalid-feedback">
+                          {{ $message }}
+                      </div>
+                  @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="phoneNo">Phone Number</label>
+                    <input type="text" class="form-control @error('phoneNo')
+                        is-invalid
+                    @enderror" placeholder="phoneNo" name="phoneNo" id="phoneNo">
+                    @error('phoneNo')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="imagePreview">Image Preview</label>
+                    <img id="imagePreviewEdit" src="#" alt="Img Preview" class="img-thumbnail">
+                </div>
+                <div class="col-md-6">
+                    <label for="address">Address</label>
+                    <textarea name="address" class="form-control @error('address')
+                        is-invalid
+                    @enderror" cols="30" rows="10" placeholder="Address" id="address"></textarea>
+                    @error('address')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-md-12">
+                  <label for="role">Assign Role</label>
+                  <select name="role" class="form-control select2"data-placeholder="Select a Role">
+                    @foreach ($roles as $role)
+                      <option value="{{ $role->id }}">{{ $role->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label for="permission">Assign Permission</label>
+                  <select name="permission[]" class="form-control select2" multiple="multiple" data-placeholder="Select a Permission">
+                    <option value="admin">Admin</option>
+                    <option value="cashier">Cashier</option>
+                  </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
+      </div>
+    </form>
+
+    </div>
+  </div> --}}
     {{-- Modal END --}}
   
 @endsection
@@ -257,6 +342,7 @@
         reader.readAsDataURL(file);
       }
     });
+
   });
  
 

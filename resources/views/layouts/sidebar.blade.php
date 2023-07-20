@@ -11,7 +11,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{{ asset('storage/'.auth()->user()->image) }}" class="img-circle elevation-2" alt="User Image">
+          <img src="{{ asset('storage/'. auth()->user()->image) }}" class="img-circle elevation-2" alt="User Image">
         </div>
         @auth
         <div class="info">
@@ -74,7 +74,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              @role('admin')
+              {{-- @role('admin') --}}
               <li class="nav-item">
                 <a href="/users/index" class="nav-link {{ url('/users/index') == request()->url() ? 'active' : ''}}">
                   <i class="far fa-circle nav-icon"></i>
@@ -93,7 +93,7 @@
                   <p>Permissions</p>
                 </a>
               </li>
-              @endrole
+            {{-- @endrole --}}
               <li class="nav-item">
                 <a href="/products/index" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

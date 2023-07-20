@@ -27,7 +27,7 @@ class UsersController extends Controller
             return DataTables::of($data)
             ->editColumn('action', function($row) {
                 $var = '<center>';
-                $var .= '<a href="#" type="button" class="btn btn-xs btn-warning" style="margin-right: 3px;" data-toggle="tooltip" data-placement="top" title="Edit" ><i class="fas fa-pencil-alt"></i></a>';
+                $var .= '<button type="button" class="btn btn-xs btn-warning mr-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-whatever="'.base64_encode($row->email).'" title="Edit"><i class="fas fa-pencil-alt"></i></button>';
                 $var .= '<button type="button" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus"><i class="fas fa-trash"> </i></button>';
                 $var .= '</center>'; 
                 return $var;
@@ -45,34 +45,56 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        $user = $request->validate([
-            'name' => 'required|min:5',
-            'email' => 'required|email',
-            'phoneNo' => 'required|numeric',
-            'address' => 'required|min:10',
-            'role' => 'required',
-            'permission' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-        // dd($request->role);
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phoneNo = $request->phoneNo;
-        $user->address = $request->address;
-        $user->password = bcrypt('123456');
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '-' . $request->name . '.'.$image->getClientOriginalExtension();
-            // dd($imageName);
-            $image->storeAs('public/users', $imageName);
-            $user->image = 'users/' . $imageName;
+        try {
+            $user = $request->validate([
+                'name' => 'required|min:5',
+                'email' => 'required|email',
+                'phoneNo' => 'required|numeric',
+                'address' => 'required|min:10',
+                'role' => 'required',
+                'permission' => 'required',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+            // dd($request->role);
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phoneNo = $request->phoneNo;
+            $user->address = $request->address;
+            $user->password = bcrypt('123456');
+    
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '-' . $request->name . '.'.$image->getClientOriginalExtension();
+                // dd($imageName);
+                $image->storeAs('public/users', $imageName);
+                $user->image = 'users/' . $imageName;
+            }
+    
+            $user->save();
+            // $user->addRole($request->role);
+    
+            return redirect()->back();
+        } catch (Exception $e) {
+            return redirect()->back()->with('sweet_alert', [
+                'title' => 'Error',
+                'icon' => 'error',
+                'text' => 'Error : '.$e
+            ]);
         }
+       
+    }
 
-        $user->save();
-        $user->addRole($request->role);
+    public function getData(Request $request)
+    {
+        $email = base64_decode($request->email);
+        $data = User::where('email', $email)->first();
+      
+        return response()->json(['indctr' => 0, 'message' => 'Data found', 'data' => $data]);
+    }
 
-        return redirect()->back();
+    public function update(Request $request)
+    {
+        dd($request->all());
     }
 }

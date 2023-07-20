@@ -33,11 +33,13 @@ Route::post('/', [AuthController::class,'login']);
 Route::group(['middleware' => ['auth']], function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard.index');
 
-    Route::group(['middleware' => ['role:superadmin|admin']], function(){
+    // Route::group(['middleware' => ['role:superadmin|admin']], function(){
         // User
         Route::get('/users/index', [UsersController::class, 'index']);
+        Route::get('/users/get-data', [UsersController::class, 'getData']);
         Route::get('/users/dashboard', [UsersController::class, 'dashboard']);
         Route::post('/users/index', [UsersController::class, 'store']);
+
         // User END
 
         // Role 
@@ -49,8 +51,10 @@ Route::group(['middleware' => ['auth']], function(){
         // Permissions 
         Route::get('/permissions/index', [PermissionsController::class, 'index']);
         Route::get('/permissions/dashboard', [PermissionsController::class, 'dashboard']);
+        Route::post('/permissions/index', [PermissionsController::class, 'store']);
+
         // Permission END
-    });
+    // });
 
 
     Route::get('/signout', [AuthController::class,'signout']);

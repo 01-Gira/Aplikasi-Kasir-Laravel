@@ -23,6 +23,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+        @include('components._flash')
         <div class="row">
           <div class="col-sm-12">
             <div class="card">
