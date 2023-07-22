@@ -16,7 +16,7 @@
 			text: '{!! session()->get('sweet_alert.text') !!}',
 			timer: '{!! session()->get('sweet_alert.timer') !!}',
 			showConfirmButton: '{!! session()->get('sweet_alert.showConfirmButton') !!}'
-		}).catch(swal.noop);
+		});
 	@else
 		Swal.fire({
 			icon: '{!! session()->get('sweet_alert.icon') !!}',

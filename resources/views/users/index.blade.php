@@ -86,7 +86,7 @@
     {{-- Modal --}}
   <div class="modal fade" id="createUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg"> 
-    <form action="/users/index" method="post" enctype="multipart/form-data">
+    <form action="/users/index" method="post" enctype="multipart/form-data" id="form-create">
       @csrf
       <div class="modal-content">
         <div class="modal-header">
@@ -180,17 +180,17 @@
 
     </div>
   </div>
-{{-- 
+
 
   <div class="modal fade" id="editUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg"> 
-    <form action="/users/index/update" method="put" enctype="multipart/form-data">
+    <form action="/users/index" method="post" id="form-update">
       @csrf
       @method('PUT')
-      <input type="text" >
+      <input type="text" name="user" id="userId" hidden>
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="editUserModalLabel">Create User</h1>
+          <h1 class="modal-title fs-5" id="editUserModalLabel">Edit User</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -254,7 +254,7 @@
                 </div>
                 <div class="col-md-12">
                   <label for="role">Assign Role</label>
-                  <select name="role" class="form-control select2"data-placeholder="Select a Role">
+                  <select name="role" class="form-control select2"data-placeholder="Select a Role" id="role">
                     @foreach ($roles as $role)
                       <option value="{{ $role->id }}">{{ $role->name }}</option>
                     @endforeach
@@ -275,15 +275,15 @@
         </div>
       </div>
     </form>
-
     </div>
-  </div> --}}
+  </div>
     {{-- Modal END --}}
   
 @endsection
 @section('script')
 <script>
-  $(document).ready(function(){
+
+  // $(document).ready(function(){
     var tblMaster = $('#tblMaster').DataTable({
       "columnDefs": [{
         "searchable": false,
@@ -332,6 +332,31 @@
       }
     });
 
+    $('#form-create').submit(function(e){
+      e.preventDefault();
+      $('#createUserModal').hide();
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to create this user?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, create it!'
+        }).then(function (result) { 
+          if(result.isConfirmed){
+            e.currentTarget.submit();
+          }else {
+            $('#loading').hide();
+            $('#createUserModal').show();
+                // Batalkan penghapusan
+            Swal.fire('Cancelled', 'Creation cancelled.', 'info');
+
+          }
+         
+        }).catch(swal.noop)
+    });
+
     $('#image').on('change', function(e){
       var file = e.target.files[0];
       if(file){
@@ -343,8 +368,84 @@
       }
     });
 
-  });
- 
+    function editData(p){
+      $.ajax({
+        url: '{{ url('/users/get-data') }}',
+        type : 'get',
+        data : {
+          'email' : p
+        },
+        success : function(response){
+          // $('#form-update').attr('action', '/users/index/' + email);
+          $('#userId').val(response.data.id);
+          // console.log(response.data);
+          $('#name').val(response.data.name);
+          $('#email').val(response.data.email);
+          $('#phoneNo').val(response.data.phoneNo);
+          $('#address').val(response.data.address);
+          $('#role').val(response.data.role);
+          $('#imagePreviewEdit').attr('src', '{{ asset("public/") }}' + '/' + response.data.image);
+                    // console.log(response);
+          // Swal.fire('Success', 'Success get data', 'success');
+        },
+        error : function(xhr){
+          console.log(xhr.responseText);
+          Swal.fire('Error', 'Error : ' + xhr.responseText, 'error');
+        },
+      });
+    }
+
+    function deleteData(p){
+      let token = $('meta[name="csrf-token"]').attr("content");
+      // console.log(p);
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then(function (result) {
+          // $('#loading').show();
+
+          if(result.isConfirmed){
+            $.ajax({
+              url: '{{ url('users/index') }}',
+              type :'delete',
+              data : {
+                '_token' : token,
+                'email' : p
+              },
+              success : function(response) {
+                // $('#loading').hide();
+                tblMaster.ajax.reload();  
+                if(response.indctr == 0){
+                  Swal.fire('Success', response.message, 'success');
+
+                }else {
+                  Swal.fire('Danger', response.message, 'error');
+                }
+                
+              },
+              error : function(xhr){
+                $('#loading').hide();
+                Swal.fire('Danger', xhr.responseText, 'error');
+
+                console.log(xhr.responseText);
+              }
+            });
+          }else {
+            $('#loading').hide();
+                // Batalkan penghapusan
+            Swal.fire('Cancelled', 'Deletion cancelled.', 'info');
+
+          }
+         
+        }).catch(swal.noop)
+    }
+
+  // });
 
 </script>
 @endsection
