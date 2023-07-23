@@ -74,7 +74,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              {{-- @role('admin') --}}
+              @role('superadministrator|administrator')
               <li class="nav-item">
                 <a href="/users/index" class="nav-link {{ url('/users/index') == request()->url() ? 'active' : ''}}">
                   <i class="far fa-circle nav-icon"></i>
@@ -93,9 +93,9 @@
                   <p>Permissions</p>
                 </a>
               </li>
-            {{-- @endrole --}}
+            @endrole
               <li class="nav-item">
-                <a href="/products/index" class="nav-link">
+                <a href="/products/index" class="nav-link {{ url('/products/index') == request()->url() ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Products</p>
                 </a>
